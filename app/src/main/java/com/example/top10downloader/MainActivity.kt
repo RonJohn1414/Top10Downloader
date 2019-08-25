@@ -5,7 +5,6 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.widget.ArrayAdapter
 import android.widget.ListView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.net.URL
@@ -13,7 +12,7 @@ import kotlin.properties.Delegates
 
 
 class FeedEntry{
-    var title : String =""
+
     var name: String =""
     var artist: String =""
     var releaseDate: String =""
@@ -21,7 +20,7 @@ class FeedEntry{
     var rights: String =""
     override fun toString(): String {
         return """
-            title = $title
+            
             name = $name
             artist = $artist
             releaseDate = $releaseDate
@@ -35,15 +34,20 @@ class FeedEntry{
 class MainActivity : AppCompatActivity() {
 
     private val TAG = "MainActivity"
+    private val downloadData by lazy {DownloadData(this, xmlListView)}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     Log.d(TAG,"onCreate called")
-    val downloadData = DownloadData(this, xmlListView)
         downloadData.execute("http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topalbums/limit=10/xml")
         //("URL goes here" but up on line above)
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        downloadData.cancel(true)
     }
 
     companion object {
@@ -64,8 +68,11 @@ class MainActivity : AppCompatActivity() {
                 val parseApplications = ParseApplications()
                 parseApplications.parse(result)
 
-                val arrayAdapter = ArrayAdapter<FeedEntry>(propContext,R.layout.list_item,parseApplications.applications)
-                propListView.adapter = arrayAdapter
+//                val arrayAdapter = ArrayAdapter<FeedEntry>(propContext,R.layout.list_item,parseApplications.applications)
+//                propListView.adapter = arrayAdapter
+
+                val feedAdapter = FeedAdapter(propContext,R.layout.list_record,parseApplications.applications)
+                propListView.adapter = feedAdapter
 
             }
 

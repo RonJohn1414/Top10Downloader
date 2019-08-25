@@ -40,7 +40,6 @@ class ParseApplications {
                                     inEntry = false
                                     currentRecord = FeedEntry()  // create a new object
                                 }
-                                "title" -> currentRecord.title = textValue
                                 "name" -> currentRecord.name = textValue
                                 "artist" -> currentRecord.artist = textValue
                                 "releasedate" -> currentRecord.releaseDate = textValue
