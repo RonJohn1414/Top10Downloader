@@ -3,7 +3,6 @@ package com.example.top10downloader
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
@@ -42,19 +41,36 @@ class MainActivity : AppCompatActivity() {
     private var feedUrl: String = "http://ax.itunes.apple.com/WebObjects/MZStoreServices.woa/ws/RSS/topalbums/limit=%d/xml"
     private var feedLimit = 10
 
+    private var feedCachedUrl = "INVALIDATED"
+    private val STATE_URL = "feedUrl"
+    private val STATE_LIMIT = "feedLimit"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Log.d(TAG,"onCreate called")
+        if (savedInstanceState != null) {
+            feedUrl = savedInstanceState.getString(STATE_URL)
+            feedLimit = savedInstanceState.getInt(STATE_LIMIT)
+
+        }
 
         downloadUrl(feedUrl.format(feedLimit))
         Log.d(TAG,"onCreate: done")
     }
 
-    private fun downloadUrl(feedURL: String){
-        Log.d(TAG,"downloadUrl starting AsyncTask")
-        downloadData = DownloadData(this, xmlListView)
-        downloadData?.execute(feedURL)
-        Log.d(TAG,"download Url done")
+    private fun downloadUrl(feedUrl: String){
+        if (feedUrl != feedCachedUrl){
+            Log.d(TAG,"downloadUrl starting AsyncTask")
+            downloadData = DownloadData(this, xmlListView)
+            downloadData?.execute(feedUrl)
+            feedCachedUrl = feedUrl
+            Log.d(TAG,"download Url done")
+        }else {
+            Log.d(TAG, "downloadUrl - URL not changed")
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -87,6 +103,7 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+            R.id.mnuRefresh -> feedCachedUrl = "INVALIDATED"
         else ->
                 return super.onOptionsItemSelected(item)
         }
@@ -143,12 +160,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-    }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(STATE_URL, feedUrl)
+        outState.putInt(STATE_LIMIT, feedLimit)
 
-    override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        super.onSaveInstanceState(outState, outPersistentState)
+
     }
 
 }
