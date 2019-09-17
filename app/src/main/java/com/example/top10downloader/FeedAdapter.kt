@@ -17,35 +17,16 @@ class ViewHolder(v: View){
 }
 
 
-class FeedAdapter(context: Context, private val resource: Int, private val applications: List<FeedEntry>)
+class FeedAdapter(context: Context, private val resource: Int, private var applications: List<FeedEntry>)
    : ArrayAdapter<FeedEntry>(context, resource) {
   // private val TAG = "FeedAdapter"
    private val inflater = LayoutInflater.from(context)
 
-   override fun getCount(): Int {
-    //  Log.d(TAG, "getCount() called")
-      return applications.size
+   fun setFeedList(feedList: List<FeedEntry>){
+      this.applications = feedList
+      notifyDataSetChanged()
    }
 
-//   override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-//
-//      Log.d(TAG, "getView() called")
-//      val view = inflater.inflate(resource,parent,false)
-//      val tvName: TextView = view.findViewById(R.id.tvName)
-//      val tvArtist: TextView = view.findViewById(R.id.tvArtist)
-//      val tvReleasedate: TextView = view.findViewById(R.id.tvReleaseDate)
-//      val tvPrice: TextView = view.findViewById(R.id.tvPrice)
-//      val tvRights: TextView = view.findViewById(R.id.tvRights)
-//
-//      val currentApp = applications[position]             // teacher is changing things so I saved
-//      tvName.text = currentApp.name                       // original and did changes below
-//      tvArtist.text = currentApp.artist                   // this works below works better for memory
-//      tvReleasedate.text = currentApp.releaseDate
-//      tvPrice.text = currentApp.price
-//      tvRights.text = currentApp.rights
-//
-//      return view
-//   }
 override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
  //  Log.d(TAG, "getView() called")
@@ -62,12 +43,6 @@ override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
       viewHolder = view.tag as ViewHolder
    }
 
-//   val tvName: TextView = view.findViewById(R.id.tvName)
-//   val tvArtist: TextView = view.findViewById(R.id.tvArtist)
-//   val tvReleasedate: TextView = view.findViewById(R.id.tvReleaseDate)
-//   val tvPrice: TextView = view.findViewById(R.id.tvPrice)
-//   val tvRights: TextView = view.findViewById(R.id.tvRights)
-
    val currentApp = applications[position]
    viewHolder.tvName.text = currentApp.name
    viewHolder.tvArtist.text = currentApp.artist
@@ -77,4 +52,9 @@ override fun getView(position: Int, convertView: View?, parent: ViewGroup): View
 
    return view
 }
+
+   override fun getCount(): Int {
+      //  Log.d(TAG, "getCount() called")
+      return applications.size
+   }
 }

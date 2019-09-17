@@ -1,15 +1,16 @@
 package com.example.top10downloader
 
-import android.util.Log
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 
+private const val TAG ="ParseApplication"
+
 class ParseApplications {
-    private val TAG ="ParseApplication"
+
     val applications = ArrayList<FeedEntry>()
 
     fun parse(xmlData: String): Boolean {
-        Log.d(TAG, "parse called with $xmlData")
+     //   Log.d(TAG, "parse called with $xmlData")
         var status = true
         var inEntry = false
         var textValue = ""
